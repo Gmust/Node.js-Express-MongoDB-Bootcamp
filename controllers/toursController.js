@@ -5,7 +5,16 @@ class ToursController {
 
   async getTours(req, res) {
     try {
-      const tours = await Tour.find();
+
+      const queryObj = { ...req.query };
+      const excludedQueries = ['page', 'sort', 'limit', 'fields'];
+      excludedQueries.forEach(el => delete queryObj[el]);
+
+      const query = Tour.find(queryObj);
+
+
+      const tours = await query;
+
       res.status(200).json({
         status: 'success',
         data: tours
