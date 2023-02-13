@@ -51,9 +51,10 @@ const tourSchema = new mongoose.Schema({
   images: [String],
   createdAt: {
     type: Date,
-    default: new Date()
+    default: new Date(),
+    select: false
   },
-  startDates: [Date],
+  startDates: [Date]
 });
 
 module.exports = mongoose.model('Tour', tourSchema);
