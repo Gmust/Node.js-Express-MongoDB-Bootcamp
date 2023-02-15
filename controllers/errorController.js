@@ -5,11 +5,19 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleValidationErrorDB = (err) => {
+  console.log(err);
+  const errors = Object.values(err.errors).map(el => el.message);
+
+  const message = `Invalid input data --- ${errors.join('. ')}`;
+  return new AppError(message, 400)
+
+};
 
 const handleDuplicateFieldsDB = (err) => {
   const value = Object.values(err.keyValue)[0];
   const message = `Duplicate filed value  ${value}. Use another instead`;
-  return new AppError(message, 400)
+  return new AppError(message, 400);
 };
 
 
@@ -52,7 +60,7 @@ module.exports = (err, req, res, next) => {
 
     if (err.name == 'CastError') error = handleCastErrorDB(err);
     if (err.code == '11000') error = handleDuplicateFieldsDB(err);
-
+    if (err.name == 'ValidationError') error = handleValidationErrorDB(err);
 
     sendProdError(error, res);
 
