@@ -14,8 +14,7 @@ const tourSchema = new mongoose.Schema({
       minLength: [4, `A tour name mast have more or equal then 4 characters`],
       validate: {
         validator: function(val) {
-          const value = val.split(' ').join(' ');
-          return validator.isAlpha(value);
+          return validator.isAlpha(val, 'en-US', { ignore: ' ' });
         },
         message: 'Name must contain only letters'
       }
