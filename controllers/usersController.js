@@ -1,42 +1,15 @@
-class UsersController {
+const User = require('./../models/userModel');
+const catchAsync = require('./../utils/cathcAsync');
 
-  async getAllUsers(req, res) {
-    res.status(404).json({
-      status: 'error',
-      message: 'This route in not implemented'
-    });
-  };
+exports.getAllUsers = catchAsync(async (req, res, next) => {
 
-  async createUser(req, res) {
-    res.status(404).json({
-      status: 'error',
-      message: 'This route in not implemented'
-    });
-  };
+  const data = await User.find();
 
-  async getUser(req, res) {
-    res.status(404).json({
-      status: 'error',
-      message: 'This route in not implemented'
-    });
-  };
+  res.status(200).json({
+    status: 'success',
+    data: {
+      users: data
+    }
+  });
 
-  async patchUser(req, res) {
-    res.status(404).json({
-      status: 'error',
-      message: 'This route in not implemented'
-    });
-  };
-
-  async deleteUser(req, res) {
-    res.status(404).json({
-      status: 'error',
-      message: 'This route in not implemented'
-    });
-  };
-
-}
-
-
-module.exports = new UsersController();
-
+});
