@@ -8,16 +8,17 @@ usersRouter.post('/signup', authController.signup);
 usersRouter.post('/login', authController.login);
 usersRouter.post('/forgotPassword', authController.forgotPassword);
 usersRouter.patch('/resetPassword/:token', authController.resetPassword);
+usersRouter.patch('/updateMyPassword', authController.protectRoutes, authController.updatePassword);
 
 usersRouter
   .route('/')
-  .get(usersController.getAllUsers)
- // .post(usersController.createUser)
-  //.patch(usersController.patchUser);
+  .get(usersController.getAllUsers);
+// .post(usersController.createUser)
+//.patch(usersController.patchUser);
 
 usersRouter
-  .route('/:id')
-  //.get(usersController.getUser)
-  //.delete(usersController.deleteUser);
+  .route('/:id');
+//.get(usersController.getUser)
+//.delete(usersController.deleteUser);
 
 module.exports = usersRouter;
