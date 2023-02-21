@@ -13,8 +13,16 @@ const signJwt = id => {
 };
 
 const sendJwt = (user, statusCode, res) => {
-
   const token = signJwt(user._id);
+  const cookieOption = {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)
+  };
+
+  if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
+
+  res.cookie('jwt', token, cookieOption);
+
+  user.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',
@@ -33,7 +41,7 @@ exports.signup = catchAsync(async (req, res) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
     passwordChangedAt: req.body.passwordChangedAt,
-    roler: req.body.role
+    role: req.body.role
   });
 
   sendJwt(newUser, 201, res);
@@ -50,9 +58,25 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 2) Validate email and password
 
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email })
+    .select('+password');
+
+
+  if (user.loginBanExpires.toISOString() > new Date(Date.now()).toISOString()) {
+    return next(new AppError('Too many login attempts, try again later!', 429));
+  }
+
+  if (user.loginAttempts > process.env.LOGIN_ATTEMPS_LIMIT) {
+    user.loginBanExpires = Date.now() + 2000 * 1000;
+    user.loginAttempts = 0;
+    await user.save({ validateBeforeSave: false });
+    return next(new AppError('Too many login attempts, try again later!', 429));
+  }
+
 
   if (!user || !(await user.correctPassword(password, user.password))) {
+    user.loginAttempts += 1;
+    user.save({validateBeforeSave: false})
     return next(new AppError('Invalid email or password', 401));
   }
 
@@ -97,8 +121,6 @@ exports.protectRoutes = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     // Check is role lead-guide or admin
-    console.log(roles);
-    console.log(req.user.role);
     if (!roles.includes(req.user.role)) {
       return next(new AppError('You don`t have permission to perform this action', 403));
     }
@@ -127,7 +149,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   to ${resetURL}.\nIf you didn\`t forget your password, please ignore this email!`;
 
   try {
-    console.log(user);
 
     await sendEmail({
       email: user.email,
