@@ -9,7 +9,7 @@ mongoose.connect('mongodb+srv://reflexive:gachitop@cluster0.8vjgihj.mongodb.net/
   console.log('DB connected');
 });
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 
 const importData = async () => {

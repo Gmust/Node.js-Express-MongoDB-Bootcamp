@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-
 const SIMPLE_TOUR_ERR_MSG = 'A tour must have a';
 
 
@@ -77,7 +76,40 @@ const tourSchema = new mongoose.Schema({
       default: new Date(),
       select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false
+    },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      location: String
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number
+      }
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ]
   },
   {
     toJSON: { virtuals: true },
@@ -89,10 +121,25 @@ tourSchema.virtual('durationWeek').get(function() {
   return this.duration / 7;
 });
 
+tourSchema.pre(/^find/, function(next) {
+  this.populate('guides', '_id name role email')
+
+  next();
+});
+
 /*tourSchema.pre('aggregate', function (next){
   console.log(this.pipeline())
   next()
 })*/
+
+/*
+tourSchema.pre('save', async function(next) {
+  console.log(this.guides)
+  const guidesPromise = this.guides.map(id => User.findById(id));
+  this.guides = await Promise.all(guidesPromise);
+  next();
+});
+*/
 
 module.exports = mongoose.model('Tour', tourSchema);
 
