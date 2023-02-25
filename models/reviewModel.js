@@ -4,8 +4,8 @@ const validator = require('validator');
 const reviewSchema = new mongoose.Schema({
     review: {
       type: String,
-      minLength: 40,
-      require: [true, 'Review can`t be empty']
+      minLength: 5,
+      required: [true, 'Review can`t be empty']
     },
     rating: {
       type: Number,
@@ -20,12 +20,12 @@ const reviewSchema = new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      require: [true, 'Review must belong to the user']
+      required: [true, 'Review must belong to the user']
     },
     tour: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tour',
-      require: [true, 'Review must belong to a tour']
+      required: [true, 'Review must belong to a tour']
     }
   },
   {
@@ -33,5 +33,11 @@ const reviewSchema = new mongoose.Schema({
     toObject: { virtuals: true }
   }
 );
+
+reviewSchema.pre(/^find/, function(next) {
+  this.populate('user', 'name photo')
+  next();
+});
+
 
 module.exports = mongoose.model('Review', reviewSchema);

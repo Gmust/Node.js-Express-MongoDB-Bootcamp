@@ -8,6 +8,7 @@ const hpp = require('hpp');
 const dotenv = require('dotenv').config();
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -43,11 +44,12 @@ app.use(express.static(`${__dirname}/public`));
 
 // Prevent parameter pollution
 app.use(hpp({
-  whitelist: ['price', 'ratingQuantity','ratingsAverage','difficulty','maxGroupSize', 'duration']
+  whitelist: ['price', 'ratingQuantity', 'ratingsAverage', 'difficulty', 'maxGroupSize', 'duration']
 }));
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   const err = new AppError(`Invalid route: ${req.originalUrl}`, 404);
