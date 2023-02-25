@@ -13,13 +13,13 @@ tourRouter.route('/tours-plan/:year').get(tourController.getYearPlan);
 
 tourRouter
   .route('/')
-  .get(authController.protectRoutes, tourController.getTours)
-  .post(tourController.createTour);
+  .get(tourController.getTours)
+  .post(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.createTour);
 
 tourRouter
   .route('/:id')
   .get(tourController.getTour)
-  .patch(tourController.patchTour)
+  .patch(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.patchTour)
   .delete(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
 
 

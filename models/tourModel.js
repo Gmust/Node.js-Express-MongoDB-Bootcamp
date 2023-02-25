@@ -117,6 +117,9 @@ const tourSchema = new mongoose.Schema({
   }
 );
 
+tourSchema.index({ ratingAverage: 1, price: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationWeek').get(function() {
   return this.duration / 7;
 });
@@ -125,10 +128,10 @@ tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
   localField: '_id'
-})
+});
 
 tourSchema.pre(/^find/, function(next) {
-  this.populate('guides', '_id name role email')
+  this.populate('guides', '_id name role email');
 
   next();
 });

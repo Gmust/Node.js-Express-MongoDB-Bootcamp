@@ -4,20 +4,24 @@ const authController = require('../controllers/authController');
 
 usersRouter = express.Router();
 
-usersRouter.get('/me', authController.protectRoutes, usersController.getMe, usersController.getUser);
 usersRouter.post('/signup', authController.signup);
 usersRouter.post('/login', authController.login);
 usersRouter.post('/forgotPassword', authController.forgotPassword);
 usersRouter.patch('/resetPassword/:token', authController.resetPassword);
-usersRouter.patch('/updateMyPassword', authController.protectRoutes, authController.updatePassword);
-usersRouter.patch('/updateMyData', authController.protectRoutes, usersController.updateMyData);
-usersRouter.delete('/deleteMe', authController.protectRoutes, usersController.setUserInactive);
+
+// protect all routes after this middleware
+usersRouter.use(authController.protectRoutes);
+
+usersRouter.get('/me', usersController.getMe, usersController.getUser);
+usersRouter.patch('/updateMyPassword', authController.updatePassword);
+usersRouter.patch('/updateMyData', usersController.updateMyData);
+usersRouter.delete('/deleteMe', usersController.setUserInactive);
+
+usersRouter.use(authController.restrictTo('admin'))
 
 usersRouter
   .route('/')
   .get(usersController.getAllUsers);
-// .post(usersController.createUser)
-//.patch(usersController.patchUser);
 
 usersRouter
   .route('/:id')
