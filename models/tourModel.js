@@ -42,7 +42,8 @@ const tourSchema = new mongoose.Schema({
       type: Number,
       default: 0,
       min: [1, 'A rating must be more or equal than 1'],
-      max: [5, 'A rating must be lower or equal than 5']
+      max: [5, 'A rating must be lower or equal than 5'],
+      set: val => Math.round(val * 10) / 10
     },
     ratingQuantity: {
       type: Number,
@@ -119,6 +120,7 @@ const tourSchema = new mongoose.Schema({
 
 tourSchema.index({ ratingAverage: 1, price: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeek').get(function() {
   return this.duration / 7;
@@ -136,19 +138,6 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
-/*tourSchema.pre('aggregate', function (next){
-  console.log(this.pipeline())
-  next()
-})*/
-
-/*
-tourSchema.pre('save', async function(next) {
-  console.log(this.guides)
-  const guidesPromise = this.guides.map(id => User.findById(id));
-  this.guides = await Promise.all(guidesPromise);
-  next();
-});
-*/
 
 module.exports = mongoose.model('Tour', tourSchema);
 

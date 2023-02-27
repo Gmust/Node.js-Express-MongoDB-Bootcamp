@@ -10,6 +10,8 @@ tourRouter.use('/:tourId/reviews', reviewRouter);
 tourRouter.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getTours);
 tourRouter.route('/tour-stats').get(tourController.getTourStats);
 tourRouter.route('/tours-plan/:year').get(tourController.getYearPlan);
+tourRouter.route('/tours-within/:distance/center/:latlong/unit/:unit').get(tourController.getToursWithin)
+
 
 tourRouter
   .route('/')

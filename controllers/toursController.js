@@ -83,5 +83,25 @@ exports.getYearPlan = catchAsync(async (req, res, next) => {
 
 });
 
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { latlong, unit, distance } = req.params;
+  const [lat, long] = latlong.split(',');
 
+  const radius = unit === 'mi' ? distance / 3963.2  : distance / 6371;
 
+  if (!lat || !long) {
+    next(new AppError('Please provide latitude and longitude in the format lat, long', 400));
+  }
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[long, lat], radius] } }
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      data: tours
+    }
+  });
+});
