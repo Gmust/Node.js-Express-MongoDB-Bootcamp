@@ -138,6 +138,14 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
+tourSchema.pre('aggregate', function(next) {
+  const things = this.pipeline()[0];
+  if (Object.keys(things)[0] !== '$geoNear') {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
+  next();
+});
+
 
 module.exports = mongoose.model('Tour', tourSchema);
 
