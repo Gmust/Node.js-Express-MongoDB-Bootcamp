@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimiter = require('express-rate-limit');
@@ -6,6 +7,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const dotenv = require('dotenv').config();
+
+const viewRouter = require('./routes/viewRoutes');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -13,6 +16,9 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 // Security http headers
 app.use(helmet());
@@ -47,9 +53,11 @@ app.use(hpp({
   whitelist: ['price', 'ratingQuantity', 'ratingsAverage', 'difficulty', 'maxGroupSize', 'duration']
 }));
 
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/', viewRouter);
 
 app.all('*', (req, res, next) => {
   const err = new AppError(`Invalid route: ${req.originalUrl}`, 404);
