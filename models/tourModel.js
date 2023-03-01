@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const slugify = require('slugify');
 const SIMPLE_TOUR_ERR_MSG = 'A tour must have a';
-
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -45,10 +45,11 @@ const tourSchema = new mongoose.Schema({
       max: [5, 'A rating must be lower or equal than 5'],
       set: val => Math.round(val * 10) / 10
     },
-    ratingQuantity: {
+    ratingsQuantity: {
       type: Number,
       default: 0
     },
+    slug: String,
     discountPrice: {
       type: Number,
       validate: {
@@ -90,7 +91,7 @@ const tourSchema = new mongoose.Schema({
       },
       coordinates: [Number],
       address: String,
-      location: String
+      description: String
     },
     locations: [
       {
@@ -132,9 +133,13 @@ tourSchema.virtual('reviews', {
   localField: '_id'
 });
 
+tourSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
 tourSchema.pre(/^find/, function(next) {
   this.populate('guides', '_id name role email');
-
   next();
 });
 
