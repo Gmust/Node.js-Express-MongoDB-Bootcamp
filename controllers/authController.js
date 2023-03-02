@@ -61,10 +61,23 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email })
     .select('+password');
 
+  console.log(user);
 
-  if (user.loginBanExpires.toISOString() > new Date(Date.now()).toISOString()) {
+  if (user !== null && user.loginBanExpires.toISOString() > new Date(Date.now()).toISOString()) {
     return next(new AppError('Too many login attempts, try again later!', 429));
   }
+
+
+  if (!user) {
+    return next(new AppError('Invalid email or password', 401));
+  }
+
+  if (!(await user.correctPassword(password, user.password))) {
+    user.loginAttempts += 1;
+    user.save({ validateBeforeSave: false });
+    return next(new AppError('Invalid email or password', 401));
+  }
+
 
   if (user.loginAttempts > process.env.LOGIN_ATTEMPS_LIMIT) {
     user.loginBanExpires = Date.now() + 2000 * 1000;
@@ -73,12 +86,6 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Too many login attempts, try again later!', 429));
   }
 
-
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    user.loginAttempts += 1;
-    user.save({validateBeforeSave: false})
-    return next(new AppError('Invalid email or password', 401));
-  }
 
   // 3) if everything is  correct send token
 

@@ -139,7 +139,7 @@ tourSchema.pre('save', function(next) {
 });
 
 tourSchema.pre(/^find/, function(next) {
-  this.populate('guides', '_id name role email');
+  this.populate('guides', '_id name role email photo');
   next();
 });
 
