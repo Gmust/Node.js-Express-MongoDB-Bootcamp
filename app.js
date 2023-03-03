@@ -21,7 +21,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // Security http headers
-app.use(helmet());
+//app.use(helmet({ contentSecurityPolicy: false }));
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
