@@ -14,7 +14,8 @@ mongoose.connect('mongodb+srv://reflexive:gachitop@cluster0.8vjgihj.mongodb.net/
   })
   .then(() => {
     console.log('DB connected');
-  });
+  })
+  .catch(e => console.log(e));
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));

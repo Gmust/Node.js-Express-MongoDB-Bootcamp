@@ -15,7 +15,8 @@ const signJwt = id => {
 const sendJwt = (user, statusCode, res) => {
   const token = signJwt(user._id);
   const cookieOption = {
-    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true
   };
 
   if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
@@ -61,7 +62,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email })
     .select('+password');
 
-  console.log(user);
+
 
   if (user !== null && user.loginBanExpires.toISOString() > new Date(Date.now()).toISOString()) {
     return next(new AppError('Too many login attempts, try again later!', 429));
@@ -88,17 +89,22 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
   // 3) if everything is  correct send token
-
   sendJwt(user, 200, res);
 
 });
 
-exports.protectRoutes = catchAsync(async (req, res, next) => {
+exports.logout = (req, res) => {
+  res.clearCookie('jwt');
+  res.status(200).json({ status: 'success' });
+};
 
+exports.protectRoutes = catchAsync(async (req, res, next) => {
   let token;
   // 1) Checking if header exists and if it is - get token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -120,6 +126,7 @@ exports.protectRoutes = catchAsync(async (req, res, next) => {
       new AppError('User recently changed password! Please log in again.', 401)
     );
   }
+
 
   req.user = currentUser;
   next();
@@ -230,6 +237,34 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // 4) Log in user, send JWT
 
   sendJwt(user, 200, res);
-
 });
+
+
+//Only for rendered pages, no errors!
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decodedToken = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+      // 3) Check if user still exists
+      const currentUser = await User.findById(decodedToken.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      //4) Check if password changed after issuing of token
+      if (currentUser.changedPasswordAfter(decodedToken.iat)) {
+        return next();
+      }
+
+      res.locals.user = currentUser;
+      return next();
+    } catch (e) {
+      return next();
+    }
+  } else {
+    next();
+  }
+});
+
 

@@ -1,11 +1,16 @@
-const locationsData  = JSON.parse(document.getElementById('map').dataset.location);
+const locationsData = JSON.parse(document.getElementById('map').dataset.location);
 
 
-const map = L.map('map').setView([31.111745, -118.113491], 1);
+const map = L.map('map', {
+  center: [31.111745, -118.113491],
+  zoom: 16,
+  minZoom: 3,
+  worldCopyJump: true
+});
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution:
-    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
 const markerArray = [];
@@ -15,12 +20,12 @@ locationsData.forEach((loc) => {
   const myIcon = L.icon({
     iconUrl: './../img/pin.png',
     iconSize: [30, 35],
-    iconAnchor: [15, 35],
+    iconAnchor: [15, 35]
   });
 
   L.marker(reversedArr, { icon: myIcon }).addTo(map).bindPopup(`<p >Day ${loc.day}: ${loc.description}</p>`, {
     autoClose: false,
-    className: 'mapPopup',
+    className: 'mapPopup'
   });
   markerArray.push(reversedArr);
 });
