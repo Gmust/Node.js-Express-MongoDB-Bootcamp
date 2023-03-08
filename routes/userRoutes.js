@@ -16,7 +16,7 @@ usersRouter.use(authController.protectRoutes);
 
 usersRouter.get('/me', usersController.getMe, usersController.getUser);
 usersRouter.patch('/updateMyPassword', authController.updatePassword);
-usersRouter.patch('/updateMyData', usersController.uploadUserPhoto, usersController.updateMyData);
+usersRouter.patch('/updateMyData', usersController.uploadUserPhoto, usersController.resizePhoto ,usersController.updateMyData);
 usersRouter.delete('/deleteMe', usersController.setUserInactive);
 
 usersRouter.use(authController.restrictTo('admin'));

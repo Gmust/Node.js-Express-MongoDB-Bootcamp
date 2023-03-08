@@ -1,6 +1,5 @@
 import { showAlert } from './alerts.js';
 
-
 const updateSettings = async (data) => {
   try {
     const res = await axios.patch('http://localhost:8080/api/v1/users/updateMyData', data);
@@ -18,11 +17,16 @@ const updateSettings = async (data) => {
   }
 };
 
-document.querySelector('.form__upload').addEventListener('submit', (e) => {
+document.querySelector('.form-user-data').addEventListener('change', async (e) => {
   e.preventDefault();
-
   const formData = new FormData();
-  formData.append('name', document.getElementById('name').value);
-  formData.append('email', document.getElementById('email').value);
-  updateSettings(formData);
+  formData.append('photo', document.getElementById('photo').files[0]);
+  const newImage = await updateSettings(formData);
+
+  if (newImage) {
+    document.querySelector('.nav__user-img')
+      .setAttribute('src', `/img/users/${newImage.data.data.user.photo}`);
+    document.querySelector('.form__user-photo')
+      .setAttribute('src', `/img/users/${newImage.data.data.user.photo}`);
+  }
 });
