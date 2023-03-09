@@ -22,7 +22,7 @@ tourRouter
 tourRouter
   .route('/:id')
   .get(tourController.getTour)
-  .patch(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.patchTour)
+  .patch(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.uploadTourPhotos, tourController.resizeTourPhotos, tourController.patchTour)
   .delete(authController.protectRoutes, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
 
 

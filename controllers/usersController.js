@@ -1,5 +1,6 @@
 const multer = require('multer');
 const sharp = require('sharp');
+const fs = require('fs');
 const User = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
@@ -16,6 +17,16 @@ const multerStorage = multer.diskStorage({
   }
 });
 */
+
+const deleteOldPhoto = req => {
+  console.log(req);
+
+  const path = `public/img/users/${req.user.photo}`;
+
+  fs.unlink(path, err => {
+    if (err) console.log(err);
+  });
+};
 
 const multerStorage = multer.memoryStorage();
 
@@ -96,6 +107,11 @@ exports.setUserInactive = catchAsync(async (req, res, next) => {
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
+  next();
+};
+
+exports.deleteUserPhoto = (req, res, next) => {
+  if (!req.user.photo.includes('default')) deleteOldPhoto(req);
   next();
 };
 
