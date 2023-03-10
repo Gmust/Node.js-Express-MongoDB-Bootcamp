@@ -53,6 +53,10 @@ class SendEmail {
     await this.send('welcomeEmail', 'Welcome');
   }
 
+  async sendResetPassword() {
+    await this.send('resetPasswordEmail', 'Your password reset token( valid only for 10 minutes)');
+  }
+
 }
 
 
