@@ -36,7 +36,6 @@ const sendJwt = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res) => {
 
-
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -44,13 +43,12 @@ exports.signup = catchAsync(async (req, res) => {
     confirmPassword: req.body.confirmPassword,
     passwordChangedAt: req.body.passwordChangedAt,
     role: req.body.role
-  });
+});
 
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url)
-  await new SendEmail(newUser, url).sendWelcome();
+const url = `${req.protocol}://${req.get('host')}/me`;
+await new SendEmail(newUser, url).sendWelcome();
 
-  sendJwt(newUser, 201, res);
+sendJwt(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -103,6 +101,7 @@ exports.logout = (req, res) => {
 };
 
 exports.protectRoutes = catchAsync(async (req, res, next) => {
+
   let token;
   // 1) Checking if header exists and if it is - get token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -165,7 +164,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
-    await new SendEmail(user, resetURL).sendResetPassword()
+    await new SendEmail(user, resetURL).sendResetPassword();
     /*    await SendEmail.send({
           email: user.email,
           subject: 'Your password reset token (valid for 10 min)',

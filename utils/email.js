@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const sendinBlue = require('nodemailer-sendinblue-transport');
 const pug = require('pug');
 const { convert } = require('html-to-text');
 
@@ -13,10 +14,14 @@ class SendEmail {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      // Would be done in the future
-      return 1;
+      return nodemailer.createTransport({
+        service: 'SendinBlue',
+        auth: {
+          user: process.env.SENDINBLUE_USERNAME,
+          pass: process.env.SENDINBLUE_PASSWORD
+        }
+      });
     }
-
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -38,9 +43,10 @@ class SendEmail {
       }
     );
 
+
     const mailOptions = {
       from: this.from,
-      to: this.to,
+      to: this.to.email,
       subject,
       html,
       text: convert(html, { wordWrap: false })
