@@ -19,7 +19,6 @@ const multerStorage = multer.diskStorage({
 */
 
 const deleteOldPhoto = req => {
-  console.log(req);
 
   const path = `public/img/users/${req.user.photo}`;
 
@@ -79,12 +78,10 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
   if (req.body && req.file) filteredBody.photo = req.file.fileName;
 
-  console.log(filteredBody);
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody,
     { new: true, runValidators: true }
   );
 
-  console.log(updatedUser);
 
   res.status(200).json({
     status: 'success',

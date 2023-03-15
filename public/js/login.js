@@ -8,6 +8,8 @@ const logout = async () => {
         showAlert('success', 'Logged out successfully!');
         location.assign('/');
       }, 1500);
+    } else {
+      location.reload(true);
     }
     return res;
   } catch (e) {

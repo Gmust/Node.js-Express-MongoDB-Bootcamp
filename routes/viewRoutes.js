@@ -10,6 +10,7 @@ viewRouter.get('/', bookingController.createBookingCheckout, authController.isLo
 viewRouter.get('/tours/:slug', authController.isLoggedIn, viewController.getTour);
 viewRouter.get('/login', authController.isLoggedIn, viewController.login);
 viewRouter.get('/me', authController.protectRoutes, viewController.getAccount);
+viewRouter.get('/my-tours', authController.protectRoutes, viewController.getMyTours);
 
 viewRouter.post('/user-update-info', authController.protectRoutes, viewController.updatesUserData);
 

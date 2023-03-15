@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const dotenv = require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const viewRouter = require('./routes/viewRoutes');
 const tourRouter = require('./routes/tourRoutes');
@@ -81,6 +82,8 @@ const apiLimiter = rateLimiter({
 
 // Limit request for same api
 app.use('/api', apiLimiter);
+
+app.use(compression())
 
 // Body parsing
 app.use(express.json({ limit: '10kb' }));
