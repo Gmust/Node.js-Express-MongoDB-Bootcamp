@@ -1,7 +1,7 @@
 import { showAlert } from './alerts.js';
 
 
-const updateSettings = async (data) => {
+export const updateSettings = async (data) => {
   try {
     const res = await axios.patch('http://localhost:8080/api/v1/users/updateMyData', data);
 
@@ -18,11 +18,3 @@ const updateSettings = async (data) => {
   }
 };
 
-document.querySelector('.form__upload').addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const formData = new FormData();
-  formData.append('name', document.getElementById('name').value);
-  formData.append('email', document.getElementById('email').value);
-  updateSettings(formData);
-});

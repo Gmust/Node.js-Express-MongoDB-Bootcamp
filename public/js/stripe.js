@@ -3,7 +3,7 @@ import { showAlert } from './alerts.js';
 
 const bookingBtn = document.getElementById('books-tour');
 
-const bookTour = async tourId => {
+export const bookTour = async tourId => {
   try {
     const session = await axios.get(`http://localhost:8080/api/v1/booking/checkout-session/${tourId}`);
 
@@ -16,10 +16,5 @@ const bookTour = async tourId => {
   }
 };
 
-bookingBtn.addEventListener('click', e => {
-  e.target.textContent = 'Processing...';
-  const { tourId } = e.target.dataset;
-  bookTour(tourId);
-});
 
 

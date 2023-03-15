@@ -9,14 +9,17 @@
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "set NODE_ENV=production&&nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "build": "parcel build ./public/js/index.js --dist-dir ./public/js/bundled",
+    "watch:js": "parcel serve ./public/js/index.js --dist-dir ./public/js/bundled"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "ndb": "^1.1.5",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "parcel": "^2.0.0-rc.0"
   },
   "dependencies": {
     "@types/mongoose": "^5.11.97",

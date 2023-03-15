@@ -1,6 +1,6 @@
 import { showAlert } from './alerts.js';
 
-const updatePassword = async (passwordCurrent, password, passwordConfirm) => {
+export const updatePassword = async (passwordCurrent, password, passwordConfirm) => {
   try {
     const data = {
       passwordCurrent,
@@ -24,19 +24,3 @@ const updatePassword = async (passwordCurrent, password, passwordConfirm) => {
   }
 };
 
-document.querySelector('.form-user-settings').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  document.querySelector('.btn--save-password').textContent = 'Updating...';
-
-  const passwordCurrent = document.getElementById('password-current').value;
-  const password = document.getElementById('password').value;
-  const passwordConfirm = document.getElementById('password-confirm').value;
-  await updatePassword(passwordCurrent, password, passwordConfirm);
-
-  document.querySelector('.btn--save-password').textContent = 'Save password';
-  document.getElementById('password-current').value = '';
-  document.getElementById('password').value = '';
-  document.getElementById('password-confirm').value = '';
-
-});
