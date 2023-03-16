@@ -22,7 +22,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // Implementing CORS
-app.user(cors());
+app.use(cors());
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
