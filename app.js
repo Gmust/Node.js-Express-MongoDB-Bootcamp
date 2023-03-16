@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const dotenv = require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const viewRouter = require('./routes/viewRoutes');
 const tourRouter = require('./routes/tourRoutes');
@@ -20,6 +21,8 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
+// Implementing CORS
+app.user(cors());
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -83,7 +86,7 @@ const apiLimiter = rateLimiter({
 // Limit request for same api
 app.use('/api', apiLimiter);
 
-app.use(compression())
+app.use(compression());
 
 // Body parsing
 app.use(express.json({ limit: '10kb' }));
