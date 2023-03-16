@@ -3,6 +3,7 @@ import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
 import { updatePassword } from './updatePassword.js';
 import { bookTour } from './stripe.js';
+import { showAlert } from './alerts';
 
 const map = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
@@ -37,7 +38,7 @@ if (userDataForm) {
     formData.append('email', document.getElementById('email').value);
     formData.append('photo', document.getElementById('photo').files[0]);
 
-    const newImage = await updateSettings(formData)
+    const newImage = await updateSettings(formData);
 
     if (newImage) {
       document.querySelector('.nav__user-img')
@@ -67,11 +68,14 @@ if (userPasswordForm) {
   });
 }
 
-if(bookBtn) {
+if (bookBtn) {
   bookBtn.addEventListener('click', e => {
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     bookTour(tourId);
   });
-
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alertMessage) showAlert('success', alertMessage);
+

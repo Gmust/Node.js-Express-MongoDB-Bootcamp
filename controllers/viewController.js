@@ -80,3 +80,8 @@ exports.updatesUserData = catchAsync(async (req, res) => {
 
 });
 
+exports.alerts = (req, res, next) => {
+  const { alert } = req.query;
+  if (alert === 'booking') res.locals.alert === 'Your booking was successfull.Check your email';
+  next();
+};
