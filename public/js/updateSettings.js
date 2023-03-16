@@ -3,7 +3,7 @@ import { showAlert } from './alerts.js';
 
 export const updateSettings = async (data) => {
   try {
-    const res = await axios.patch('http://localhost:8080/api/v1/users/updateMyData', data);
+    const res = await axios.patch('/api/v1/users/updateMyData', data);
 
     if (res.data.status === 'success') {
       window.setTimeout(() => {

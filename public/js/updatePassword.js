@@ -8,7 +8,7 @@ export const updatePassword = async (passwordCurrent, password, passwordConfirm)
       passwordConfirm
     };
 
-    const res = await axios.patch('http://localhost:8080/api/v1/users/updateMyPassword', data);
+    const res = await axios.patch('/api/v1/users/updateMyPassword', data);
 
     if (res.data.status === 'success') {
       window.setTimeout(() => {

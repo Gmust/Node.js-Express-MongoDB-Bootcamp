@@ -5,7 +5,7 @@ const bookingBtn = document.getElementById('books-tour');
 
 export const bookTour = async tourId => {
   try {
-    const session = await axios.get(`http://localhost:8080/api/v1/booking/checkout-session/${tourId}`);
+    const session = await axios.get(`/api/v1/booking/checkout-session/${tourId}`);
 
     console.log(session)
 

@@ -3,7 +3,7 @@ import { showAlert } from './alerts.js';
 
 export const logout = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/api/v1/users/logout');
+    const res = await axios.get('/api/v1/users/logout');
     if (res.data.status === 'success') {
       window.setTimeout(() => {
         showAlert('success', 'Logged out successfully!');
@@ -21,7 +21,7 @@ export const logout = async () => {
 
 export const login = async (loginData) => {
   try {
-    const res = await axios.post('http://localhost:8080/api/v1/users/login', loginData);
+    const res = await axios.post('/api/v1/users/login', loginData);
 
     if (res.data.status === 'success') {
       window.setTimeout(() => {
